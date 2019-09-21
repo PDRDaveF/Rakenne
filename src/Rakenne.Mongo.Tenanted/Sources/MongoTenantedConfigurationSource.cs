@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Rakenne.Abstractions.Parsers.Implementation;
 using Rakenne.Mongo.Abstractions.Repository.Interfaces;
@@ -15,9 +16,9 @@ namespace Rakenne.Mongo.Tenanted.Sources
 
         public MongoTenantedConfigurationSource(WebHostBuilderContext context, MongoTenantedConfiguration configuration, ISettingsRepository repository)
         {
-            _context = context;
-            _configuration = configuration;
-            _repository = repository;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
