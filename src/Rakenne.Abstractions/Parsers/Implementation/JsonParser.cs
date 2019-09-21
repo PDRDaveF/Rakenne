@@ -19,6 +19,15 @@ namespace Rakenne.Abstractions.Parsers.Implementation
 
         public IDictionary<string, string> Parse(string json)
         {
+            try
+            {
+                JObject.Parse(json);
+            }
+            catch (Exception)
+            {
+                return _data;
+            }
+
             using (_reader = new JsonTextReader(new StringReader(json)))
             {
                 var config = JObject.Load(_reader);

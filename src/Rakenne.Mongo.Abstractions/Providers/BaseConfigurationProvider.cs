@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
@@ -21,9 +22,14 @@ namespace Rakenne.Mongo.Abstractions.Providers
 
         protected BaseConfigurationProvider(WebHostBuilderContext context, TConfiguration configuration, IParser<string> parser, ISettingsRepository repository)
         {
-            _context = context;
-            _parser = parser;
-            Configuration = configuration;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _parser = parser ?? throw new ArgumentNullException(nameof(parser));
+
+            if (repository == null)
+            {
+                throw new ArgumentNullException(nameof(repository));
+            }
 
             if (string.IsNullOrWhiteSpace(configuration.ConnectionString))
             {
@@ -40,25 +46,23 @@ namespace Rakenne.Mongo.Abstractions.Providers
 
         protected void LoadData(FilterDefinition<Setting> filter)
         {
-            try
+            var settings = Search(filter);
+
+            if (settings == null)
             {
-                var database = _client.GetDatabase(Configuration.Database);
-                var collection = database.GetCollection<Setting>(_context.HostingEnvironment.ApplicationName);
-                var results = collection.Find(filter);
-
-                if (!results.Any())
-                {
-                    return;
-                }
-
-                var settings = results.FirstOrDefault();
-
-                Data = _parser.Parse(settings.Settings);
+                return;
             }
-            catch (Exception exception)
-            {
-                Data = new Dictionary<string, string> { { "JsonParsingError", exception.Message } };
-            }
+
+            Data = _parser.Parse(settings.Settings);
+        }
+
+        private Setting Search(FilterDefinition<Setting> filter)
+        {
+            var database = _client.GetDatabase(Configuration.Database);
+            var collection = database.GetCollection<Setting>(_context.HostingEnvironment.ApplicationName);
+            var results = collection.FindSync<Setting>(filter)?.Current?.ToList() ?? new List<Setting>();
+
+            return results.Any() ? results.FirstOrDefault() : null;
         }
     }
 }
