@@ -77,7 +77,7 @@ namespace Rakenne.Abstractions.Parsers.Implementation
                     break;
 
                 default:
-                    throw new Exception("Went boom");
+                    throw new Exception($"Invalid type {token.Type}");
             }
         }
 
@@ -97,7 +97,7 @@ namespace Rakenne.Abstractions.Parsers.Implementation
 
             if (_data.ContainsKey(key))
             {
-                throw new Exception("Went boom");
+                throw new Exception($"Duplicate key {key}");
             }
             _data[key] = data.ToString(CultureInfo.InvariantCulture);
         }
