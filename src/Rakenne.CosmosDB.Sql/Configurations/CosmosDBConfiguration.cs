@@ -8,8 +8,6 @@ namespace Rakenne.CosmosDB.Sql.Configurations
 
         public string PrimaryKey { get; set; }
 
-        public string Collection { get; set; }
-
         public bool ReloadOnChange { get; set; }
     }
 }
