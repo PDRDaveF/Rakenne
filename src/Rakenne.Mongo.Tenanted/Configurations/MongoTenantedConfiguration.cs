@@ -1,8 +1,8 @@
-﻿using Rakenne.Mongo.Configurations;
+﻿using Rakenne.Mongo.Abstractions.Configurations;
 
 namespace Rakenne.Mongo.Tenanted.Configurations
 {
-    public class MongoTenantedConfiguration : MongoConfiguration
+    public sealed class MongoTenantedConfiguration : MongoConfiguration
     {
         public string Tenant { get; set; }
     }

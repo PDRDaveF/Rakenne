@@ -14,7 +14,7 @@ namespace Rakenne.Mongo.Abstractions.Providers
     {
         private readonly WebHostBuilderContext _context;
         protected readonly TConfiguration Configuration;
-        private readonly MongoClient _client;
+        private readonly IMongoClient _client;
         private readonly IParser<string> _parser;
 
         protected string Environment => _context.HostingEnvironment.EnvironmentName;
@@ -35,7 +35,7 @@ namespace Rakenne.Mongo.Abstractions.Providers
                 throw new ArgumentNullException(nameof(configuration), "Database is missing from configuration");
             }
 
-            var settings = repository.CreateClient(configuration.ConnectionString);
+            _client = repository.CreateClient(configuration.ConnectionString);
         }
 
         protected void LoadData(FilterDefinition<Setting> filter)

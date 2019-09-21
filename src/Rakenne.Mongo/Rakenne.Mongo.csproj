@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Rakenne.Abstractions\Rakenne.Abstractions.csproj" />
+    <ProjectReference Include="..\Rakenne.Mongo.Abstractions\Rakenne.Mongo.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

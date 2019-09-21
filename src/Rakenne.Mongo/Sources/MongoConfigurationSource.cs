@@ -1,25 +1,28 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Rakenne.Abstractions.Parsers.Implementation;
-using Rakenne.Mongo.Configurations;
-using Rakenne.Mongo.Providers;
+using Rakenne.Mongo.Abstractions.Configurations;
+using Rakenne.Mongo.Abstractions.Repository.Interfaces;
+using Rakenne.Mongo.Providers.Implementation;
 
 namespace Rakenne.Mongo.Sources
 {
-    public class MongoConfigurationSource : IConfigurationSource
+    public sealed class MongoConfigurationSource : IConfigurationSource
     {
         private readonly WebHostBuilderContext _context;
         private readonly MongoConfiguration _configuration;
+        private readonly ISettingsRepository _repository;
 
-        public MongoConfigurationSource(WebHostBuilderContext context, MongoConfiguration configuration)
+        public MongoConfigurationSource(WebHostBuilderContext context, MongoConfiguration configuration, ISettingsRepository repository)
         {
             _context = context;
             _configuration = configuration;
+            _repository = repository;
         }
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            return new MongoConfigurationProvider(_context, _configuration, new JsonParser());
+            return new MongoConfigurationProvider(_context, _configuration, new JsonParser(), _repository);
         }
     }
 }
