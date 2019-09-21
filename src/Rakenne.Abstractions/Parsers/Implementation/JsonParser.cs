@@ -19,6 +19,8 @@ namespace Rakenne.Abstractions.Parsers.Implementation
 
         public IDictionary<string, string> Parse(string json)
         {
+            _data.Clear();
+
             try
             {
                 JObject.Parse(json);
