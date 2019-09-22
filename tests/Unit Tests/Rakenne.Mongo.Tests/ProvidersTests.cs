@@ -4,7 +4,6 @@ using System.Threading;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using MongoDB.Driver;
-using MongoDB.Driver.Core.Operations;
 using Moq;
 using Rakenne.Abstractions.Models;
 using Rakenne.Abstractions.Parsers.Interfaces;
@@ -21,7 +20,7 @@ namespace Rakenne.Mongo.Tests
         public void Constructor_ThrowsArgumentNullException_WhenContextMissing()
         {
             // ReSharper disable ObjectCreationAsStatement
-            Action sut = () => new MongoConfigurationProvider(null, null, null, null);
+            Action sut = () => new MongoConfigurationProvider(null, new MongoConfiguration(), new Mock<IParser<string>>().Object, new Mock<ISettingsRepository>().Object);
 
             sut.Should().ThrowExactly<ArgumentNullException>().And.ParamName.Should().Be("context");
         }
@@ -30,7 +29,7 @@ namespace Rakenne.Mongo.Tests
         public void Constructor_ThrowsArgumentNullException_WhenConfigurationMissing()
         {
             // ReSharper disable ObjectCreationAsStatement
-            Action sut = () => new MongoConfigurationProvider(new WebHostBuilderContext(), null, null, null);
+            Action sut = () => new MongoConfigurationProvider(new WebHostBuilderContext(), null, new Mock<IParser<string>>().Object, new Mock<ISettingsRepository>().Object);
 
             sut.Should().ThrowExactly<ArgumentNullException>().And.ParamName.Should().Be("configuration");
         }
@@ -39,7 +38,7 @@ namespace Rakenne.Mongo.Tests
         public void Constructor_ThrowsArgumentNullException_WhenParserMissing()
         {
             // ReSharper disable ObjectCreationAsStatement
-            Action sut = () => new MongoConfigurationProvider(new WebHostBuilderContext(), new MongoConfiguration(), null, null);
+            Action sut = () => new MongoConfigurationProvider(new WebHostBuilderContext(), new MongoConfiguration(), null, new Mock<ISettingsRepository>().Object);
 
             sut.Should().ThrowExactly<ArgumentNullException>().And.ParamName.Should().Be("parser");
         }
