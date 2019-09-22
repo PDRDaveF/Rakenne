@@ -9,17 +9,22 @@ using Rakenne.CosmosDB.Sql.Configurations;
 
 namespace Rakenne.CosmosDB.Sql
 {
-    public class CosmosDBWatcherClient
+    public sealed class CosmosDBWatcherClient : IDisposable
     {
         private ConfigurationReloadToken _reloadToken = new ConfigurationReloadToken();
+
+        private CosmosClient _cosmosClient;
+
         private readonly ChangeFeedProcessor _processor;
+
+
         public CosmosDBWatcherClient(WebHostBuilderContext context, CosmosDBConfiguration configuration)
         {
-            var cosmosClient = new CosmosClient(configuration.ConnectionString, configuration.PrimaryKey);
+            _cosmosClient = new CosmosClient(configuration.ConnectionString, configuration.PrimaryKey);
 
-            var leaseContainer = cosmosClient.GetContainer(configuration.Database, "leases");
+            var leaseContainer = _cosmosClient.GetContainer(configuration.Database, "leases");
 
-            var monitoredContainer = cosmosClient.GetContainer(configuration.Database, context.HostingEnvironment.ApplicationName);
+            var monitoredContainer = _cosmosClient.GetContainer(configuration.Database, context.HostingEnvironment.ApplicationName);
 
             var builder = monitoredContainer
                 .GetChangeFeedProcessorBuilder<object>(string.Empty,
@@ -46,6 +51,12 @@ namespace Rakenne.CosmosDB.Sql
             });
 
             return _reloadToken;
+        }
+
+        public void Dispose()
+        {
+            _cosmosClient.Dispose();
+            _cosmosClient = null;
         }
     }
 }
