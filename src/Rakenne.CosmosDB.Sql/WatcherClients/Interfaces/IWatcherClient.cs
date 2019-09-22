@@ -1,8 +1,9 @@
-﻿using Microsoft.Extensions.Primitives;
+﻿using System;
+using Microsoft.Extensions.Primitives;
 
 namespace Rakenne.CosmosDB.Sql.WatcherClients.Interfaces
 {
-    public interface IWatcherClient
+    public interface IWatcherClient : IDisposable
     {
         IChangeToken Watch();
     }
