@@ -18,6 +18,10 @@ namespace Rakenne.CosmosDB.Sql.Providers
         private readonly IDisposable _changeTokenRegistration;
         private readonly IParser<string> _parser;
 
+        private const string PartitionKey = "environment";
+
+        private FeedOptions FeedOptions => new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
+
         public CosmosDBConfigurationProvider(WebHostBuilderContext context, CosmosDBConfiguration configuration, CosmosDBWatcherClient watcherClient, IParser<string> parser)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
@@ -37,32 +41,49 @@ namespace Rakenne.CosmosDB.Sql.Providers
 
         private void LoadSettings()
         {
-            using (var client = new DocumentClient(new Uri(_configuration.ConnectionString), _configuration.PrimaryKey))
+            var settings = Search();
+
+            if(settings == null)
             {
-                var query = new SqlQuerySpec
-                {
-                    QueryText = "SELECT c.settings FROM c WHERE c.environment = @environment",
-                    Parameters = new SqlParameterCollection
-                    {
-                        new SqlParameter("@environment", _context.HostingEnvironment.EnvironmentName.ToLowerInvariant())
-                    }
-                };
-                var queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
-                var configQuery = client.CreateDocumentQuery<Setting>(UriFactory.CreateDocumentCollectionUri(_configuration.Database, "ConfigTest"), query, queryOptions).ToList();
-
-                var settings = configQuery.FirstOrDefault();
-
-                if (settings == null)
-                {
-                    return;
-                }
-
+                return;
             }
+
+            Data = _parser.Parse(settings.Settings);
         }
 
         public override void Load()
         {
             LoadSettings();
+        }
+
+        private SqlQuerySpec Query()
+        {
+            return new SqlQuerySpec
+            {
+                QueryText = $"SELECT c.settings FROM c WHERE c.{PartitionKey} = @{PartitionKey}",
+                Parameters = new SqlParameterCollection
+                {
+                    new SqlParameter($"@{PartitionKey}", _context.HostingEnvironment.EnvironmentName.ToLowerInvariant())
+                }
+            };
+        }
+
+        private Setting Search()
+        {
+            using (var client = new DocumentClient(new Uri(_configuration.ConnectionString), _configuration.PrimaryKey))
+            {
+                try
+                {
+                    return client
+                        .CreateDocumentQuery<Setting>(
+                            UriFactory.CreateDocumentCollectionUri(_configuration.Database, _context.HostingEnvironment.ApplicationName), Query(),
+                            FeedOptions).ToList().FirstOrDefault();
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
         }
 
         public void Dispose()
