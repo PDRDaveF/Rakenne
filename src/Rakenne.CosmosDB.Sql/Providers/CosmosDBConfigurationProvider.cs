@@ -22,7 +22,7 @@ namespace Rakenne.CosmosDB.Sql.Providers
 
         private FeedOptions FeedOptions => new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
 
-        public CosmosDBConfigurationProvider(WebHostBuilderContext context, CosmosDBConfiguration configuration, CosmosDBWatcherClient watcherClient, IParser<string> parser)
+        public CosmosDBConfigurationProvider(WebHostBuilderContext context, CosmosDBConfiguration configuration, IWatcherClient watcherClient, IParser<string> parser)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
