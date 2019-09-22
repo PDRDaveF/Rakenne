@@ -6,7 +6,7 @@ using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 using Rakenne.Abstractions.Models;
-using Rakenne.Abstractions.Parsers.Implementation;
+using Rakenne.Abstractions.Parsers.Interfaces;
 using Rakenne.CosmosDB.Sql.Configurations;
 
 namespace Rakenne.CosmosDB.Sql.Providers
@@ -16,11 +16,13 @@ namespace Rakenne.CosmosDB.Sql.Providers
         private readonly WebHostBuilderContext _context;
         private readonly CosmosDBConfiguration _configuration;
         private readonly IDisposable _changeTokenRegistration;
+        private readonly IParser<string> _parser;
 
-        public CosmosDBConfigurationProvider(WebHostBuilderContext context, CosmosDBConfiguration configuration, CosmosDBWatcherClient watcherClient)
+        public CosmosDBConfigurationProvider(WebHostBuilderContext context, CosmosDBConfiguration configuration, CosmosDBWatcherClient watcherClient, IParser<string> parser)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _parser = parser ?? throw new ArgumentNullException(nameof(parser));
             
             if (watcherClient == null)
             {
@@ -55,9 +57,6 @@ namespace Rakenne.CosmosDB.Sql.Providers
                     return;
                 }
 
-                var parser = new JsonParser();
-
-                Data = parser.Parse(settings.Settings);
             }
         }
 

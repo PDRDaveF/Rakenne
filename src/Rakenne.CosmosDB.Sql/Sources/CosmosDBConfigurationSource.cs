@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Rakenne.Abstractions.Parsers.Implementation;
 using Rakenne.CosmosDB.Sql.Configurations;
 using Rakenne.CosmosDB.Sql.Providers;
 
@@ -19,7 +20,7 @@ namespace Rakenne.CosmosDB.Sql.Sources
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            return new CosmosDBConfigurationProvider(_context, _configuration, new CosmosDBWatcherClient(_context, _configuration));
+            return new CosmosDBConfigurationProvider(_context, _configuration, new CosmosDBWatcherClient(_context, _configuration), new JsonParser());
         }
     }
 }
