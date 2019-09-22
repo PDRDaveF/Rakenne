@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Rakenne.Abstractions.Parsers.Implementation;
 using Rakenne.CosmosDB.Sql.Configurations;
 using Rakenne.CosmosDB.Sql.Providers;
+using Rakenne.CosmosDB.Sql.WatcherClients.Implementation;
 
 namespace Rakenne.CosmosDB.Sql.Sources
 {
@@ -13,8 +15,8 @@ namespace Rakenne.CosmosDB.Sql.Sources
 
         public CosmosDBConfigurationSource(WebHostBuilderContext context, CosmosDBConfiguration configuration)
         {
-            _context = context;
-            _configuration = configuration;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
 

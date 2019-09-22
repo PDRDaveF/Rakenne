@@ -8,6 +8,7 @@ using Microsoft.Extensions.Primitives;
 using Rakenne.Abstractions.Models;
 using Rakenne.Abstractions.Parsers.Interfaces;
 using Rakenne.CosmosDB.Sql.Configurations;
+using Rakenne.CosmosDB.Sql.WatcherClients.Interfaces;
 
 namespace Rakenne.CosmosDB.Sql.Providers
 {
@@ -20,19 +21,34 @@ namespace Rakenne.CosmosDB.Sql.Providers
 
         private const string PartitionKey = "environment";
 
-        private FeedOptions FeedOptions => new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
+        private static FeedOptions FeedOptions => new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
 
         public CosmosDBConfigurationProvider(WebHostBuilderContext context, CosmosDBConfiguration configuration, IWatcherClient watcherClient, IParser<string> parser)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _parser = parser ?? throw new ArgumentNullException(nameof(parser));
-            
+
             if (watcherClient == null)
             {
                 throw new ArgumentNullException(nameof(watcherClient));
             }
-            
+
+            if (string.IsNullOrWhiteSpace(configuration.ConnectionString))
+            {
+                throw new ArgumentNullException(nameof(configuration), "Connectionstring is missing from configuration");
+            }
+
+            if (string.IsNullOrWhiteSpace(configuration.Database))
+            {
+                throw new ArgumentNullException(nameof(configuration), "Database is missing from configuration");
+            }
+
+            if (string.IsNullOrWhiteSpace(configuration.PrimaryKey))
+            {
+                throw new ArgumentNullException(nameof(configuration), "Primary key is missing from configuration");
+            }
+
             if (_configuration.ReloadOnChange)
             {
                 _changeTokenRegistration = ChangeToken.OnChange(watcherClient.Watch, LoadSettings);
