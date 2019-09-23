@@ -23,7 +23,7 @@ namespace Rakenne.CosmosDB.Sql.WatcherClients.Implementation
         {
             _cosmosClient = cosmosClient;
 
-            var leaseContainer = _cosmosClient.GetContainer(configuration.Database, "leases");
+            var leaseContainer = _cosmosClient.GetContainer(configuration.Database, configuration.LeaseContainerName);
 
             var monitoredContainer = _cosmosClient.GetContainer(configuration.Database, context.HostingEnvironment.ApplicationName);
 
