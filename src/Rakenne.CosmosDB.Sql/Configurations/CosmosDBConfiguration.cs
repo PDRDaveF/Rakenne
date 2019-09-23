@@ -11,5 +11,7 @@ namespace Rakenne.CosmosDB.Sql.Configurations
         public string LeaseContainerName { get; set; }
 
         public bool ReloadOnChange { get; set; }
+
+        public int PollingIntervalInSeconds { get; set; } = 5;
     }
 }

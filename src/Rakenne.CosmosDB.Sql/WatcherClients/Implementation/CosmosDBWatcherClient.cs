@@ -52,10 +52,17 @@ namespace Rakenne.CosmosDB.Sql.WatcherClients.Implementation
                 .GetChangeFeedProcessorBuilder<object>(string.Empty,
                     async (changes, token) => await ProcessChanges(token))
                 .WithInstanceName($"{configuration.GetDataSourceName(context.HostingEnvironment)}-{configuration.GetEnvironment(context.HostingEnvironment)}")
-                .WithLeaseContainer(leaseContainer)
-                .WithPollInterval(new TimeSpan(0, 0, 0, 5));
+                .WithLeaseContainer(leaseContainer);
 
+            if (configuration.PollingIntervalInSeconds < 1)
+            {
+                _processor = builder.Build();
+                return;
+            }
+
+            builder.WithPollInterval(new TimeSpan(0, 0, 0, configuration.PollingIntervalInSeconds));
             _processor = builder.Build();
+
         }
 
         private async Task ProcessChanges(CancellationToken token)
