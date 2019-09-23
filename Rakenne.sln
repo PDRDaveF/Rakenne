@@ -23,7 +23,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rakenne.Mongo.Tests", "test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rakenne.Abstractions.Tests", "tests\Unit Tests\Rakenne.Abstractions.Tests\Rakenne.Abstractions.Tests.csproj", "{800208D3-F402-4429-B7B9-50DD559D70FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rakenne.CosmosDB.Sql.Tests", "tests\Unit Tests\Rakenne.CosmosDB.Sql.Tests\Rakenne.CosmosDB.Sql.Tests.csproj", "{6EAA65D5-A5D6-4B1A-8446-AD58AF54B3F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rakenne.CosmosDB.Sql.Tests", "tests\Unit Tests\Rakenne.CosmosDB.Sql.Tests\Rakenne.CosmosDB.Sql.Tests.csproj", "{6EAA65D5-A5D6-4B1A-8446-AD58AF54B3F3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Harness", "Harness", "{43B050F0-1339-4B05-B942-3169DFDA6738}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rakenne.TestHarness", "harness\Rakenne.TestHarness\Rakenne.TestHarness.csproj", "{582BC271-3938-4AAC-98BD-16A9D1426EB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +67,10 @@ Global
 		{6EAA65D5-A5D6-4B1A-8446-AD58AF54B3F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EAA65D5-A5D6-4B1A-8446-AD58AF54B3F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EAA65D5-A5D6-4B1A-8446-AD58AF54B3F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{582BC271-3938-4AAC-98BD-16A9D1426EB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{582BC271-3938-4AAC-98BD-16A9D1426EB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{582BC271-3938-4AAC-98BD-16A9D1426EB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{582BC271-3938-4AAC-98BD-16A9D1426EB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,6 +85,7 @@ Global
 		{ACFB480A-D516-4F85-A0D9-78134162B478} = {ABF52CC7-0FC6-4C5C-9DC8-ACE10686AA1B}
 		{800208D3-F402-4429-B7B9-50DD559D70FB} = {ABF52CC7-0FC6-4C5C-9DC8-ACE10686AA1B}
 		{6EAA65D5-A5D6-4B1A-8446-AD58AF54B3F3} = {ABF52CC7-0FC6-4C5C-9DC8-ACE10686AA1B}
+		{582BC271-3938-4AAC-98BD-16A9D1426EB2} = {43B050F0-1339-4B05-B942-3169DFDA6738}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {30306699-FF97-4E25-A599-258DF9BA3D3D}
