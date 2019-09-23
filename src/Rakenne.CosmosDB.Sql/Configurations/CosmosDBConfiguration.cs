@@ -1,7 +1,9 @@
-﻿using Rakenne.Abstractions.Configurations;
+﻿using System.Diagnostics.CodeAnalysis;
+using Rakenne.Abstractions.Configurations;
 
 namespace Rakenne.CosmosDB.Sql.Configurations
 {
+    [ExcludeFromCodeCoverage]
     public class CosmosDBConfiguration : DataSourceConfiguration
     {
         public string Database { get; set; }
@@ -12,6 +14,6 @@ namespace Rakenne.CosmosDB.Sql.Configurations
 
         public bool ReloadOnChange { get; set; }
 
-        public int PollingIntervalInSeconds { get; set; } = 5;
+        public int PollingIntervalInSeconds { get; set; }
     }
 }
