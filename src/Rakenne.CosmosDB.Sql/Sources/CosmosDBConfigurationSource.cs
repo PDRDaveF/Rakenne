@@ -24,8 +24,8 @@ namespace Rakenne.CosmosDB.Sql.Sources
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            _watcherClient = new CosmosDBWatcherClient(_client, _context, _configuration);
             _client = new CosmosClient(configuration.ConnectionString, configuration.PrimaryKey);
+            _watcherClient = new CosmosDBWatcherClient(_client, _context, _configuration);
             _parser = new JsonParser();
         }
 
