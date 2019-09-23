@@ -10,7 +10,7 @@ using Rakenne.CosmosDB.Sql.WatcherClients.Interfaces;
 
 namespace Rakenne.CosmosDB.Sql.WatcherClients.Implementation
 {
-    public sealed class CosmosDBWatcherClient : IWatcherClient, IDisposable
+    public sealed class CosmosDBWatcherClient : IWatcherClient
     {
         private ConfigurationReloadToken _reloadToken = new ConfigurationReloadToken();
 
@@ -19,9 +19,9 @@ namespace Rakenne.CosmosDB.Sql.WatcherClients.Implementation
         private readonly ChangeFeedProcessor _processor;
 
 
-        public CosmosDBWatcherClient(WebHostBuilderContext context, CosmosDBConfiguration configuration)
+        public CosmosDBWatcherClient(CosmosClient cosmosClient, WebHostBuilderContext context, CosmosDBConfiguration configuration)
         {
-            _cosmosClient = new CosmosClient(configuration.ConnectionString, configuration.PrimaryKey);
+            _cosmosClient = cosmosClient;
 
             var leaseContainer = _cosmosClient.GetContainer(configuration.Database, "leases");
 

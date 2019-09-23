@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Rakenne.Abstractions.Parsers.Implementation;
 using Rakenne.Abstractions.Parsers.Interfaces;
@@ -17,12 +18,14 @@ namespace Rakenne.CosmosDB.Sql.Sources
 
         private IWatcherClient _watcherClient;
         private IParser<string> _parser;
+        private CosmosClient _client;
 
         public CosmosDBConfigurationSource(WebHostBuilderContext context, CosmosDBConfiguration configuration)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            _watcherClient = new CosmosDBWatcherClient(_context, _configuration);
+            _watcherClient = new CosmosDBWatcherClient(_client, _context, _configuration);
+            _client = new CosmosClient(configuration.ConnectionString, configuration.PrimaryKey);
             _parser = new JsonParser();
         }
 
@@ -34,6 +37,8 @@ namespace Rakenne.CosmosDB.Sql.Sources
 
         public void Dispose()
         {
+            _client.Dispose();
+            _client = null;
             _watcherClient.Dispose();
             _watcherClient = null;
             _parser = null;
