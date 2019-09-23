@@ -21,7 +21,27 @@ namespace Rakenne.CosmosDB.Sql.WatcherClients.Implementation
 
         public CosmosDBWatcherClient(CosmosClient cosmosClient, WebHostBuilderContext context, CosmosDBConfiguration configuration)
         {
-            _cosmosClient = cosmosClient;
+            _cosmosClient = cosmosClient ?? throw new ArgumentNullException(nameof(cosmosClient));
+
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
+            if (string.IsNullOrWhiteSpace(configuration.Database))
+            {
+                throw new ArgumentNullException(nameof(configuration), "Database is missing from configuration");
+            }
+
+            if (string.IsNullOrWhiteSpace(configuration.LeaseContainerName))
+            {
+                throw new ArgumentNullException(nameof(configuration), "Lease container name is missing from configuration");
+            }
 
             var leaseContainer = _cosmosClient.GetContainer(configuration.Database, configuration.LeaseContainerName);
 
