@@ -18,14 +18,18 @@ namespace Rakenne.CosmosDB.Sql.Sources
 
         private IWatcherClient _watcherClient;
         private IParser<string> _parser;
-        private CosmosClient _client;
 
-        public CosmosDBConfigurationSource(WebHostBuilderContext context, CosmosDBConfiguration configuration)
+        public CosmosDBConfigurationSource(WebHostBuilderContext context, CosmosDBConfiguration configuration, CosmosClient client)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            _client = new CosmosClient(configuration.ConnectionString, configuration.PrimaryKey);
-            _watcherClient = new CosmosDBWatcherClient(_client, _context, _configuration);
+
+            if (client == null)
+            {
+                throw new ArgumentNullException(nameof(client));
+            }
+
+            _watcherClient = new CosmosDBWatcherClient(client, _context, _configuration);
             _parser = new JsonParser();
         }
 
@@ -37,8 +41,6 @@ namespace Rakenne.CosmosDB.Sql.Sources
 
         public void Dispose()
         {
-            _client.Dispose();
-            _client = null;
             _watcherClient.Dispose();
             _watcherClient = null;
             _parser = null;
