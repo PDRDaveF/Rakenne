@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
+using Rakenne.Abstractions.Extensions;
 using Rakenne.CosmosDB.Sql.Configurations;
 using Rakenne.CosmosDB.Sql.WatcherClients.Interfaces;
 
@@ -45,12 +46,12 @@ namespace Rakenne.CosmosDB.Sql.WatcherClients.Implementation
 
             var leaseContainer = _cosmosClient.GetContainer(configuration.Database, configuration.LeaseContainerName);
 
-            var monitoredContainer = _cosmosClient.GetContainer(configuration.Database, context.HostingEnvironment.ApplicationName);
+            var monitoredContainer = _cosmosClient.GetContainer(configuration.Database, configuration.GetDataSourceName(context.HostingEnvironment));
 
             var builder = monitoredContainer
                 .GetChangeFeedProcessorBuilder<object>(string.Empty,
                     async (changes, token) => await ProcessChanges(token))
-                .WithInstanceName($"{context.HostingEnvironment.ApplicationName}-{context.HostingEnvironment.EnvironmentName}")
+                .WithInstanceName($"{configuration.GetDataSourceName(context.HostingEnvironment)}-{configuration.GetEnvironment(context.HostingEnvironment)}")
                 .WithLeaseContainer(leaseContainer)
                 .WithPollInterval(new TimeSpan(0, 0, 0, 5));
 

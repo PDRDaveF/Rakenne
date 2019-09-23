@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
+using Rakenne.Abstractions.Extensions;
 using Rakenne.Abstractions.Models;
 using Rakenne.Abstractions.Parsers.Interfaces;
 using Rakenne.Mongo.Abstractions.Configurations;
@@ -59,7 +60,7 @@ namespace Rakenne.Mongo.Abstractions.Providers
         private Setting Search(FilterDefinition<Setting> filter)
         {
             var database = _client.GetDatabase(Configuration.Database);
-            var collection = database.GetCollection<Setting>(_context.HostingEnvironment.ApplicationName);
+            var collection = database.GetCollection<Setting>(Configuration.GetDataSourceName(_context.HostingEnvironment));
             var results = collection.FindSync<Setting>(filter)?.Current?.ToList() ?? new List<Setting>();
 
             return results.Any() ? results.FirstOrDefault() : null;

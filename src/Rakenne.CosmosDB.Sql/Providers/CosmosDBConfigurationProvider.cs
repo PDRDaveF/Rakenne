@@ -5,6 +5,7 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
+using Rakenne.Abstractions.Extensions;
 using Rakenne.Abstractions.Models;
 using Rakenne.Abstractions.Parsers.Interfaces;
 using Rakenne.CosmosDB.Sql.Configurations;
@@ -79,7 +80,7 @@ namespace Rakenne.CosmosDB.Sql.Providers
                 QueryText = $"SELECT c.settings FROM c WHERE c.{PartitionKey} = @{PartitionKey}",
                 Parameters = new SqlParameterCollection
                 {
-                    new SqlParameter($"@{PartitionKey}", _context.HostingEnvironment.EnvironmentName.ToLowerInvariant())
+                    new SqlParameter($"@{PartitionKey}", _configuration.GetEnvironment(_context.HostingEnvironment).ToLowerInvariant())
                 }
             };
         }
@@ -92,7 +93,7 @@ namespace Rakenne.CosmosDB.Sql.Providers
                 {
                     return client
                         .CreateDocumentQuery<Setting>(
-                            UriFactory.CreateDocumentCollectionUri(_configuration.Database, _context.HostingEnvironment.ApplicationName), Query(),
+                            UriFactory.CreateDocumentCollectionUri(_configuration.Database, _configuration.GetDataSourceName(_context.HostingEnvironment)), Query(),
                             FeedOptions).ToList().FirstOrDefault();
                 }
                 catch (Exception)
