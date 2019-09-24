@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Dave Fury, Adam Clifford</Authors>
+    <Company>Rakenne.CosmosDB.Sql</Company>
+    <RepositoryUrl>https://github.com/PDRDaveF/Rakenne</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/PDRDaveF/Rakenne/wiki</PackageProjectUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Description>Library for the storage of application settings within a CosmosDB SQL database</Description>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +20,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Rakenne.Abstractions\Rakenne.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
